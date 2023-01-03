@@ -11,7 +11,7 @@ public class ServerImpl implements Server {
 
     @Override
     public Collection<Environment> receive() {
-        // TODO Auto-generated method stub
+        // TODO Auto-generated method stubb
         return null;
     }
 
