@@ -1,5 +1,6 @@
 package com.briup.env.common.entity;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
@@ -7,7 +8,9 @@ import java.sql.Timestamp;
  *
  *
  */
-public class Environment {
+public class Environment implements Serializable{
+
+    private static final long serialVersionUID = 1L;
     // 属性
     // 环境种类的名称（温度、湿度、二氧化碳浓度、光照强度）
     private String name;
