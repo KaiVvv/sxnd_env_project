@@ -9,10 +9,11 @@ import org.junit.Test;
 
 import com.briup.env.common.entity.Environment;
 import com.briup.env.common.interfaces.Client;
-
+import com.briup.env.client.ClientImpl;
 public class ClientImpl implements Client{
 
     @Override
+    @Test
     public void send(Collection<Environment> coll) {
         // 定义网络模块的客户端
         Socket socket = null;
@@ -44,9 +45,9 @@ public class ClientImpl implements Client{
         }
     }
 
-    @Test
-    public void test() {
-        new ClientImpl().send(null);
-    }
+   // @Test
+//    public void test() {
+//        new ClientImpl().send(coll);
+//    }
 
 }
