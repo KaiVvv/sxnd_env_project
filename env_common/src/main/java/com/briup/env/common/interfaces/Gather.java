@@ -9,7 +9,7 @@ import java.util.Collection;
 
 import com.briup.env.common.entity.Environment;
 
-public interface Gather {
+public interface Gather extends EnvironmentInit{
     /**
      * 采集环境数据
      * @return 环境对象的集合

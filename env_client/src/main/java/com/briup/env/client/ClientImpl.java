@@ -4,21 +4,32 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Collection;
+import java.util.Properties;
 
 import org.junit.Test;
 
 import com.briup.env.common.entity.Environment;
 import com.briup.env.common.interfaces.Client;
-import com.briup.env.client.ClientImpl;
+import com.briup.env.common.interfaces.Configuration;
+
 public class ClientImpl implements Client{
 
+    private String ip;
+    private int port;
+
     @Override
-    @Test
+    public void init(Properties properties) {
+        // 问题：这种方式为什么可以获得数据呢？
+        ip = properties.getProperty("ip");
+        port = Integer.parseInt(properties.getProperty("port"));
+
+    }
+
+    @Override
     public void send(Collection<Environment> coll) {
         // 定义网络模块的客户端
         Socket socket = null;
-        String ip = "127.0.0.1";
-        int port = 8888;
+
         // 对象输出流
         ObjectOutputStream oos = null;
         try {
@@ -45,9 +56,15 @@ public class ClientImpl implements Client{
         }
     }
 
-   // @Test
-//    public void test() {
-//        new ClientImpl().send(coll);
-//    }
+    @Test
+    public void test() {
+        new ClientImpl().send(null);
+    }
+
+
+    @Override
+    public void config(Configuration configuration) {
+        // TODO Auto-generated method stub
+    }
 
 }

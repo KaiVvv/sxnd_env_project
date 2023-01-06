@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import com.briup.env.common.entity.Environment;
 
-public interface Client {
+public interface Client extends EnvironmentInit{
 
     /**
      * 客户端发送方法

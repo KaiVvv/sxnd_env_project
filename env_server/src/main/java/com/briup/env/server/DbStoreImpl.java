@@ -5,14 +5,29 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Properties;
 
 import org.junit.Test;
 
 import com.briup.env.common.entity.Environment;
+import com.briup.env.common.interfaces.Configuration;
 import com.briup.env.common.interfaces.DbStore;
 import com.briup.jdbc.util.JdbcUtil;
 
 public class DbStoreImpl implements DbStore{
+
+    private int batchSize;
+
+    @Override
+    public void init(Properties properties) {
+        batchSize =Integer.parseInt(properties.getProperty("batchSize"));
+    }
+
+    @Override
+    public void config(Configuration configuration) {
+        // TODO Auto-generated method stub
+
+    }
 
     @Override
     public void dbstore(Collection<Environment> coll) {
@@ -66,7 +81,7 @@ public class DbStoreImpl implements DbStore{
                 ps.addBatch();
                 count++;
                 // 每1000条提交一次
-                if(count % 1000 == 0) {
+                if(count % batchSize == 0) {
                     ps.executeBatch();
                     ps.clearBatch();
                 }

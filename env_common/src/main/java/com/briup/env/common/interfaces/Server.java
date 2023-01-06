@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import com.briup.env.common.entity.Environment;
 
-public interface Server {
+public interface Server extends EnvironmentInit{
 
     /**
      * 服务器接收方法

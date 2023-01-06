@@ -6,13 +6,22 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Properties;
 
 import org.junit.Test;
 
 import com.briup.env.common.entity.Environment;
+import com.briup.env.common.interfaces.Configuration;
 import com.briup.env.common.interfaces.Server;
 
 public class ServerImpl implements Server{
+
+    private int port;
+
+    @Override
+    public void init(Properties properties) {
+        port = Integer.parseInt(properties.getProperty("port"));
+    }
 
     @Override
     public Collection<Environment> receive() {
@@ -21,7 +30,6 @@ public class ServerImpl implements Server{
         // 完成TCP/IP服务器的编写
         ServerSocket serverSocket = null;
         Socket socket = null;
-        int port = 8888;
         // 对象输入流
         ObjectInputStream ois = null;
 
@@ -75,6 +83,14 @@ public class ServerImpl implements Server{
         Collection<Environment> coll = new ServerImpl().receive();
         coll.forEach(System.out::println);
         System.out.println("服务器端接收的数据共："+coll.size()+"条");
+    }
+
+
+
+    @Override
+    public void config(Configuration configuration) {
+        // TODO Auto-generated method stub
+
     }
 
 }
