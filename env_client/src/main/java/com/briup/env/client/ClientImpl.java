@@ -29,7 +29,6 @@ public class ClientImpl implements Client{
         // 问题：这种方式为什么可以获得数据呢？
         ip = properties.getProperty("ip");
         port = Integer.parseInt(properties.getProperty("port"));
-
     }
 
     @Override
@@ -62,6 +61,7 @@ public class ClientImpl implements Client{
                 }
         }
     }
+
 
     @Test
     public void test() {
