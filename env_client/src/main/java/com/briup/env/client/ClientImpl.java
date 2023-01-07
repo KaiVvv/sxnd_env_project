@@ -11,11 +11,18 @@ import org.junit.Test;
 import com.briup.env.common.entity.Environment;
 import com.briup.env.common.interfaces.Client;
 import com.briup.env.common.interfaces.Configuration;
+import com.briup.env.common.interfaces.Logger;
 
 public class ClientImpl implements Client{
 
     private String ip;
     private int port;
+
+    private Logger logger;
+    @Override
+    public void config(Configuration configuration) {
+        logger = configuration.getLogger();
+    }
 
     @Override
     public void init(Properties properties) {
@@ -33,24 +40,24 @@ public class ClientImpl implements Client{
         // 对象输出流
         ObjectOutputStream oos = null;
         try {
-            System.out.println("【客户端正在访问<"+ip+":"+port+">服务】");
+            logger.info("客户端正在访问<"+ip+":"+port+">服务");
             socket = new Socket(ip,port);
 
             oos = new ObjectOutputStream(socket.getOutputStream());
             oos.writeObject(coll);
             oos.flush();
             oos.close();
-            System.out.println("【数据清单发送成功！】");
+            logger.info("数据清单发送成功！");
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
+            logger.error(e.getMessage());
             e.printStackTrace();
         }finally {
             if(socket != null)
                 try {
                     socket.close();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
+                    logger.error(e.getMessage());
                     e.printStackTrace();
                 }
         }
@@ -62,9 +69,6 @@ public class ClientImpl implements Client{
     }
 
 
-    @Override
-    public void config(Configuration configuration) {
-        // TODO Auto-generated method stub
-    }
+
 
 }

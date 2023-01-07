@@ -325,13 +325,13 @@ public class GatherImpl implements Gather{
     // 配置日志模块
     private Logger logger;
 
-
+    @Override
     public void config(Configuration configuration) {
         // 引入其他模块
-        // logger = configuration.getLog();
+        logger = configuration.getLogger();
     }
 
-
+    @Override
     public void init(Properties properties) {
         fileName = properties.getProperty("fileName");
     }
@@ -346,7 +346,9 @@ public class GatherImpl implements Gather{
         map.put("1280", "CO2浓度");
     }
 
-    @Override
+    int temnum=0;
+    int lightnum=0;
+    int coxnum=0;
     public Collection<Environment> gather() {
         // 提前定义一个集合，用来做返回
         Collection<Environment> coll = new LinkedList<>();
@@ -360,6 +362,7 @@ public class GatherImpl implements Gather{
             br = new BufferedReader(fr);
             // 使用流
             String s = null;
+            long startTime = System.currentTimeMillis();
             while((s = br.readLine())!=null) {
                 // s就代表了文件中每一行的内容
                 // 根据数据格式，按照 ｜ 进行分割
@@ -388,7 +391,7 @@ public class GatherImpl implements Gather{
                     int v1 = Integer.parseInt(data.substring(0, 4), 16);
                     float f1 = (float) (((float)v1*0.00268127)-46.85);
                     environment.setData(f1);
-
+                    temnum++;
                     // 得在这里重新创建一个Environment对象
                     Environment env = new Environment();
                     env.setSrcId(value[0]);
@@ -408,6 +411,13 @@ public class GatherImpl implements Gather{
                 }else {
                     // 光照强度和CO2浓度的名字直接从map中取
                     environment.setName(map.get(address));
+                    if (value[3].equals("256"))
+                    {
+                        lightnum++;
+                    }else
+                    {
+                        coxnum++;
+                    }
                     int v = Integer.parseInt(data.substring(0,4),16);
                     environment.setData(v);
                 }
@@ -417,40 +427,46 @@ public class GatherImpl implements Gather{
 				environment.setData(0); // 这里需要计算
 				*/
 
-                // 拓展：统计输出以下几个数据（7分钟）
-                // 1、温度数据多少条
-                // 2、湿度数据多少条
-                // 3、光照强度数据多少条
-                // 4、CO2浓度数据多少条
-                // 5、共多少条
-                // 6、采集共花费多长时间
-
-
-
-
                 // 每循环一次，至少添加一次
                 coll.add(environment);
             }
 
+            // 统计输出
+            // 拓展：统计输出以下几个数据（7分钟）
+            // 1、温度数据多少条
+            // 2、湿度数据多少条
+            // 3、光照强度数据多少条
+            // 4、CO2浓度数据多少条
+            // 5、共多少条
+            // 6、采集共花费多长时间
+            long endTime = System.currentTimeMillis();
+            // 之前使用输出语句
+            // System.out.println("【本次采集数据共："+coll.size()+"条】");
+            // 后来我们换成了日志（运行日志）
+            logger.info("本次采集数据共："+coll.size()+"条");
+            logger.info("本次采集温湿度数据共："+temnum*2+"条");
+            logger.info("本次采集光照强度数据共："+lightnum+"条");
+            logger.info("本次采集Co2数据共："+coxnum+"条");
+            logger.info("本次采集数据共花费："+(endTime-startTime)+"毫秒");
 
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
+            logger.error(e.getStackTrace());
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
+            logger.error(e.getMessage());
             e.printStackTrace();
         } finally {
             // 流的关闭
             try {
                 fr.close();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
+                logger.error(e.getMessage());
                 e.printStackTrace();
             }
             try {
                 br.close();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
+                logger.error(e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -459,22 +475,24 @@ public class GatherImpl implements Gather{
     }
 
     // 对上面的方法进行单元测试
-    @Test
-    public void test() {
-        Collection<Environment> coll = new GatherImpl().gather();
-        coll.forEach(System.out::println);
-        System.out.print("温度数据的条数：");
-        System.out.println();
-        System.out.print("湿度数据的条数：");
-        System.out.println();
-        System.out.print("光照强度数据的条数：");
-        System.out.println();
-        System.out.print("CO2浓度的条数：");
-        System.out.println();
-        System.out.print("总的数据清单的条数：");
-        System.out.println(coll.size());
-        System.out.print("共花费");
-    }
+    //  @Test
+//    public void test() {
+//      //  Properties Properties;
+//      //new GatherImpl().init(Properties);
+//        Collection<Environment> coll = new GatherImpl().gather();
+//        coll.forEach(System.out::println);
+//        System.out.print("温度数据的条数：");
+//        System.out.println();
+//        System.out.print("湿度数据的条数：");
+//        System.out.println();
+//        System.out.print("光照强度数据的条数：");
+//        System.out.println();
+//        System.out.print("CO2浓度的条数：");
+//        System.out.println();
+//        System.out.print("总的数据清单的条数：");
+//        System.out.println(coll.size());
+//        System.out.print("共花费");
+//    }
 
 
 }

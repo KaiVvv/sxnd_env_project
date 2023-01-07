@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import com.briup.env.common.entity.Environment;
@@ -26,19 +27,24 @@ public class ServerImpl implements Server{
     @Override
     public Collection<Environment> receive() {
         // 定义一个返回的数据
+       Logger logger=Logger.getLogger(ServerImpl.class);
         Collection<Environment> coll = null;
         // 完成TCP/IP服务器的编写
         ServerSocket serverSocket = null;
         Socket socket = null;
         // 对象输入流
+
         ObjectInputStream ois = null;
 
         try {
             serverSocket = new ServerSocket(port);
             // 开启监听
-            System.out.println("【服务已经启动，正在监听"+port+"端口】");
-            socket = serverSocket.accept();
-            System.out.println(socket);
+            socket = serverSocket.accept();//1
+            logger.debug("连接的客户端主机名："+socket.getInetAddress().getHostName());//1
+            logger.debug("连接的客户端主机地址："+socket.getInetAddress().getHostAddress());
+           // System.out.println("【服务已经启动，正在监听"+port+"端口】");
+           // socket = serverSocket.accept();
+           // System.out.println(socket);
 
             ois = new ObjectInputStream(socket.getInputStream());
             Object obj = ois.readObject();
@@ -53,9 +59,12 @@ public class ServerImpl implements Server{
                     }
                 }
             }
+            logger.debug("服务端成功接收客户端发送的数据！");
         } catch (IOException e) {
             // TODO Auto-generated catch block
+
             e.printStackTrace();
+            logger.debug(e.getMessage());
         } catch (ClassNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -73,6 +82,7 @@ public class ServerImpl implements Server{
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
+                    logger.error(e.getMessage());
                 }
         }
         return coll;
